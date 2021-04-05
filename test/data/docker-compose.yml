@@ -1,0 +1,126 @@
+version: '3.7'
+services:
+  worker-checker-resource:
+    image: ${IMAGE}:${IMAGE_VERSION}
+    container_name: worker-checker-resource
+    build:
+      context: ../../..
+      dockerfile: deployments/Dockerfile
+    environment:
+      - DOCKER_COMMAND=run
+    env_file:
+      - ../environments/${ENV}.env
+      - ../environments/docker.env
+    depends_on:
+      - postgres
+  worker-checker-resource-test:
+    image: ${IMAGE}:${IMAGE_VERSION}
+    container_name: worker-checker-resource-test
+    build:
+      context: ../../..
+      dockerfile: deployments/Dockerfile
+    environment:
+      - DOCKER_COMMAND=test
+    env_file:
+      - ../environments/${ENV}.env
+      - ../environments/docker.env
+    depends_on:
+      - postgres
+  database:
+    image: '***/ap/database:1.5.0'
+    env_file:
+      - ../environments/${ENV}.env
+      - ../environments/docker.env
+    environment:
+      - DOCKER_COMMAND=run
+    depends_on:
+      - postgres
+  frontend:
+    image: '***/ap/frontend:0.1.2'
+    env_file:
+      - ../environments/${ENV}.env
+      - ../environments/docker.env
+    environment:
+      - DOCKER_COMMAND=run
+      - ENV=docker
+    ports:
+      - 8080:8080
+    depends_on:
+      - api
+  api:
+    image: '***/ap/api:1.0.0'
+    env_file:
+      - ../environments/${ENV}.env
+      - ../environments/docker.env
+    environment:
+      - DOCKER_COMMAND=run
+    hostname: api
+    ports:
+      - 5031:5031
+    depends_on:
+      - postgres
+  minio:
+    image: minio/minio:RELEASE.***
+    container_name: minio
+    command: server --address :5040 /data
+    ports:
+      - 5040:5040
+    environment:
+      MINIO_ACCESS_KEY: '***'
+      MINIO_SECRET_KEY: '***'
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    hostname: mailhog
+    ports:
+      - 5026:1025
+      - 5027:8025
+    depends_on:
+      - database
+  nats:
+    image: nats:2.1.8
+    hostname: nats
+    ports:
+      - 4222:4222
+  redis:
+    image: clearlinux/redis:6.0.8
+    command: "redis-server --requirepass ***"
+    ports:
+      - 5079:6379
+    volumes:
+      - ../config/redis.conf:/etc/redis.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
+  postgres:
+    image: postgres:12.4
+    container_name: postgres
+    ports:
+      - 5032:5432
+    environment:
+      POSTGRES_USER: antipiracy
+      POSTGRES_PASSWORD: '***'
+      POSTGRES_DB: antipiracy
+  chrome-browser:
+    image: '***/ap/chrome-browser:0.1.0'
+    restart: always
+    environment:
+      - DOCKER_COMMAND=run
+    env_file:
+      - ../environments/${ENV}.env
+      - ../environments/docker.env
+    ports:
+      - 5090:5900
+    depends_on:
+      - api-satir
+      - redis
+  api-satir:
+    image: '***/ap/api-satir:0.1.0'
+    env_file:
+      - ../environments/${ENV}.env
+      - ../environments/docker.env
+    environment:
+      - DOCKER_COMMAND=run
+    hostname: api-satir
+    ports:
+      - 8487:8487
+    depends_on:
+      - redis
