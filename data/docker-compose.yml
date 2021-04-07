@@ -4,7 +4,7 @@ services:
     image: ${IMAGE}:${IMAGE_VERSION}
     container_name: worker-checker-resource
     build:
-      context: ../../..
+      context: ../..
       dockerfile: deployments/Dockerfile
     environment:
       - DOCKER_COMMAND=run
@@ -17,7 +17,7 @@ services:
     image: ${IMAGE}:${IMAGE_VERSION}
     container_name: worker-checker-resource-test
     build:
-      context: ../../..
+      context: ../..
       dockerfile: deployments/Dockerfile
     environment:
       - DOCKER_COMMAND=test

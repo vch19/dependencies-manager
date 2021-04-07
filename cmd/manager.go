@@ -1,15 +1,18 @@
-package manager
+package cmd
 
-import "log"
+import (
+	"github.com/richard2259/dependencies-manager"
+	"log"
+)
 
 func ReturnAllSortedServices(path string) []string {
-	dockerCompose := ParseYML(path)
-	return dockerCompose.Sort()
+	dockerCompose := manager.ParseYML(path)
+	return manager.Sort(&dockerCompose)
 }
 
 func Return(path string, index int) string {
-	dockerCompose := ParseYML(path)
-	sortedGraph := dockerCompose.Sort()
+	dockerCompose := manager.ParseYML(path)
+	sortedGraph := manager.Sort(&dockerCompose)
 
 	return get(sortedGraph, index)
 }

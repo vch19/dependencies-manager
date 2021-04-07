@@ -19,16 +19,18 @@ func ParseYML(path string) DockerCompose {
 	bytes, ioErr := ioutil.ReadFile(path)
 
 	if ioErr != nil {
-		log.Fatal("Error occurred during file reading")
+		log.Println("Error occurred during file reading")
+		return DockerCompose{}
 	}
 
-	services := DockerCompose{}
+	var dockerCompose DockerCompose
 
-	parsingErr := yaml.Unmarshal(bytes, &services)
+	parsingErr := yaml.Unmarshal(bytes, &dockerCompose)
 
 	if parsingErr != nil {
-		log.Fatalf("Error occurred during unmarshaling yml file")
+		log.Println("Error occurred during unmarshalling YML file")
+		return dockerCompose
 	}
 
-	return services
+	return dockerCompose
 }

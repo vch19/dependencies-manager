@@ -2,11 +2,27 @@ package manager
 
 import (
 	"log"
+	"sort"
 )
 
 type Graph struct {
 	Vertexes int
 	Nodes    map[string][]string
+	Order    []string
+}
+
+func Sort(dockerCompose *DockerCompose) []string {
+	graph := initGraph(len(dockerCompose.Services))
+	getSortedKeys(dockerCompose.Services, &graph.Order)
+
+	for _, vertex := range graph.Order {
+		graph.addVertex(vertex)
+		for _, dependency := range dockerCompose.Services[vertex].DependsOn {
+			graph.addEdge(vertex, dependency)
+		}
+	}
+
+	return graph.topologicalSort()
 }
 
 func initGraph(vertexes int) Graph {
@@ -35,17 +51,11 @@ func (graph *Graph) addEdge(serviceName string, dependsOn string) bool {
 	return true
 }
 
-func (dockerCompose *DockerCompose) Sort() []string {
-	graph := initGraph(len(dockerCompose.Services))
-
-	for key, value := range dockerCompose.Services {
-		graph.addVertex(key)
-		for _, dependency := range value.DependsOn {
-			graph.addEdge(key, dependency)
-		}
+func getSortedKeys(services map[string]Service, keySet *[]string) {
+	for key := range services {
+		*keySet = append(*keySet, key)
 	}
-
-	return graph.topologicalSort()
+	sort.Strings(*keySet)
 }
 
 func (graph *Graph) topologicalSort() []string {
@@ -58,14 +68,14 @@ func (graph *Graph) topologicalSort() []string {
 		visited[key] = false
 	}
 
-	for key := range graph.Nodes {
-		if !visited[key] {
-			topologicalSortUtil(key, visited, &stack, graph)
+	for _, vertex := range graph.Order {
+		if !visited[vertex] {
+			topologicalSortUtil(vertex, visited, &stack, graph)
 		}
 	}
 
-	for i := len(stack) - 1; i >= 0; i-- {
-		sortedGraph = append(sortedGraph, stack[i])
+	for _, service := range stack {
+		sortedGraph = append(sortedGraph, service)
 	}
 
 	return sortedGraph
