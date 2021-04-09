@@ -5,6 +5,7 @@ import (
 	manager "github.com/richard2259/dependencies-manager"
 	"github.com/spf13/cobra"
 	"os"
+	"strings"
 )
 
 //getCmd represents the get command
@@ -29,11 +30,11 @@ var getCmd = &cobra.Command{
 			for i := 1; i < len(args); i++ {
 				services = append(services, sortedServices[i])
 			}
-			fmt.Println(services)
+			fmt.Println(strings.Join(services[:], " "))
 			os.Exit(1)
 		}
 
-		fmt.Println(sortedServices)
+		fmt.Println(strings.Join(sortedServices[:], " "))
 	},
 }
 
