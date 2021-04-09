@@ -22,8 +22,7 @@ var getCmd = &cobra.Command{
 			os.Exit(-1)
 		}
 
-		dockerCompose := manager.ParseYML(args[0])
-		sortedServices := manager.Sort(&dockerCompose)
+		sortedServices := manager.ReturnAllSortedServices(args[0])
 
 		if len(args) > 1 {
 			var services []string
