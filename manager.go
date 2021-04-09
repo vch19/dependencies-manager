@@ -1,18 +1,17 @@
-package cmd
+package manager
 
 import (
-	"github.com/richard2259/dependencies-manager"
-	"log"
+	"fmt"
 )
 
 func ReturnAllSortedServices(path string) []string {
-	dockerCompose := manager.ParseYML(path)
-	return manager.Sort(&dockerCompose)
+	dockerCompose := ParseYML(path)
+	return Sort(&dockerCompose)
 }
 
 func Return(path string, index int) string {
-	dockerCompose := manager.ParseYML(path)
-	sortedGraph := manager.Sort(&dockerCompose)
+	dockerCompose := ParseYML(path)
+	sortedGraph := Sort(&dockerCompose)
 
 	return get(sortedGraph, index)
 }
@@ -23,6 +22,6 @@ func get(slice []string, index int) string {
 			return slice[i]
 		}
 	}
-	log.Println("Index doesn't exist in the passed array")
+	fmt.Println("Index doesn't exist in the passed array")
 	return ""
 }
