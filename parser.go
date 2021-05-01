@@ -1,9 +1,9 @@
 package manager
 
 import (
+	"fmt"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
-	"log"
 )
 
 type DockerCompose struct {
@@ -19,7 +19,7 @@ func ParseYML(path string) DockerCompose {
 	bytes, ioErr := ioutil.ReadFile(path)
 
 	if ioErr != nil {
-		log.Println("Error occurred during file reading")
+		fmt.Println("Error occurred during file reading")
 		return DockerCompose{}
 	}
 
@@ -28,7 +28,7 @@ func ParseYML(path string) DockerCompose {
 	parsingErr := yaml.Unmarshal(bytes, &dockerCompose)
 
 	if parsingErr != nil {
-		log.Println("Error occurred during unmarshalling YML file")
+		fmt.Println("Error occurred during unmarshalling YML file")
 		return dockerCompose
 	}
 

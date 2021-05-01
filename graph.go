@@ -1,7 +1,7 @@
 package manager
 
 import (
-	"log"
+	"fmt"
 	"sort"
 )
 
@@ -34,7 +34,7 @@ func initGraph(vertexes int) Graph {
 
 func (graph *Graph) addVertex(serviceName string) bool {
 	if _, ok := graph.Nodes[serviceName]; ok {
-		log.Printf("serviceName %v already exists\n", serviceName)
+		fmt.Printf("serviceName %v already exists\n", serviceName)
 		return false
 	}
 
