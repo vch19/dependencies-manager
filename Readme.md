@@ -15,7 +15,7 @@ This command will install the ```dependency-manager``` with the library and its 
 
 ```sh
 import (
-	manager "github.com/richard2259/dependencies-manager"
+	manager "github.com/vch19/dependencies-manager"
 )
 
 func main() {
