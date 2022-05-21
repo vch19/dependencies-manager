@@ -8,7 +8,7 @@ First, use ```go get``` to install the latest version of the library.
 This command will install the ```dependency-manager``` with the library and its dependencies:
 
 ```sh 
-~$ go get github.com/richard2259/dependencies-manager
+~$ go get github.com/vch19/dependencies-manager
 ```
 
 ## Example
